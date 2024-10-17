@@ -1,8 +1,8 @@
-import wallet from "../wba-wallet.json"
+import wallet from  "./wallet/wba-wallet.json"
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults"
 import { createGenericFile, createSignerFromKeypair, signerIdentity } from "@metaplex-foundation/umi"
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys"
-import { readFile } from "fs/promises"
+import { readFileSync } from "fs";
 
 // Create a devnet connection
 const umi = createUmi('https://api.devnet.solana.com');
@@ -13,16 +13,19 @@ const signer = createSignerFromKeypair(umi, keypair);
 umi.use(irysUploader());
 umi.use(signerIdentity(signer));
 
+//https://deanmlittle.github.io/generug/
+
 (async () => {
     try {
         //1. Load image
+        const nftFile = readFileSync("generug.png");
         //2. Convert image to generic file.
+        const genericFile = createGenericFile(nftFile,"generug.png")
         //3. Upload image
+        const [myUri] = await umi.uploader.upload([genericFile]);
 
+        console.log('Your image URI: ', myUri)
         // const image = ???
-
-        // const [myUri] = ??? 
-        // console.log("Your image URI: ", myUri);
     }
     catch(error) {
         console.log("Oops.. Something went wrong", error);

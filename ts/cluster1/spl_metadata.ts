@@ -9,7 +9,7 @@ import {
 import { createSignerFromKeypair, signerIdentity, publicKey } from "@metaplex-foundation/umi";
 import { sign } from "crypto";
 import { PublicKey } from "@solana/web3.js";
-import bs58 from "bs58"; // Import bs58 for encoding the signature
+//import bs58 from "bs58"; // Import bs58 for encoding the signature
 
 
 // Define our Mint address
