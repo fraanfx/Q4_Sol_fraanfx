@@ -1,14 +1,14 @@
 # Turbin3 Cohorts Repository
 
-Descentralized application built with rust and running on Solana devnet 
+Descentralized repository built with rust and running on Solana devnet. 
 
 
 
-Welcome to the **Restaurant review** project repository! This decentralized application (DApp) built with rust  leverages blockchain technology to implement a review platform on the Solana devnet network. Participants can place reviews about restaurants.
+Welcome to the **Turbin3 Cohort** project repository! This decentralized collection of projects (DApp's) built with rust and typescript.
 
 ## Table of Contents
 
-- [Solana Basic Concepts]()
+- Solana Basic Concepts
 
 ## Overview
 
