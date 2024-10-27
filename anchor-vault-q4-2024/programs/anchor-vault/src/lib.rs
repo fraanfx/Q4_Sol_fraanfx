@@ -67,6 +67,7 @@ pub struct Deposit<'info> {
 
 #[derive(Accounts)]
 pub struct Withdraw<'info> {
+    #[account(mut)]
     pub user: Signer<'info>,
     #[account(
         mut,
@@ -83,6 +84,7 @@ pub struct Withdraw<'info> {
 }
 #[derive(Accounts)]
 pub struct Close<'info> {
+    #[account(mut)]
     pub user: Signer<'info>,
     #[account(
         mut,
@@ -94,7 +96,7 @@ pub struct Close<'info> {
         mut,
         seeds = [b"state", user.key().as_ref()],
         bump = vault_state.state_bump,
-        close = user,
+        close = user, //close vault state account and return the rent
     )]
 
     pub vault_state: Account<'info, VaultState>,
@@ -143,10 +145,10 @@ impl<'info> Deposit<'info> {
 }
 impl<'info> Close<'info> {
     pub fn close(&mut self) -> Result<()> {
-        let cpi_program = self.system_program.to_account_info();
+        let cpi_program = self.system_program.to_account_info(); 
 
-        let cpi_accounts = Transfer {
-            from: self.vault.to_account_info(),
+        let cpi_accounts = Transfer {  
+            from: self.vault.to_account_info(), // return all lamports from vault to the account
             to: self.user.to_account_info(),
         };
 
@@ -155,7 +157,7 @@ impl<'info> Close<'info> {
 
         let cpi_ctx = CpiContext::new_with_signer(cpi_program, cpi_accounts, signer_seeds);
 
-        transfer(cpi_ctx, self.vault.lamports())?;
+        transfer(cpi_ctx, self.vault.lamports())?; // close the account and sent all the lamports in the aaccount (ammount + rent) back to user
         
         Ok(())
     }
@@ -172,10 +174,10 @@ impl<'info> Initialize<'info> {
 
 #[account]
 pub struct VaultState {
-    pub vault_bump: u8,
-    pub state_bump: u8,
+    pub vault_bump: u8, //  Memory sol account
+    pub state_bump: u8, // Memory for PDA bumps
 }
 
 impl Space for VaultState {
-    const INIT_SPACE: usize = 8 + 1 + 1;
+    const INIT_SPACE: usize = 8 + 1 + 1; // Anchor dischriminator + bump + bump
 }
