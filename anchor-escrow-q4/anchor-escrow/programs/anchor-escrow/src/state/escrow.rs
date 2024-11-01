@@ -12,6 +12,14 @@ pub struct Escrow {
     pub bump: u8,
 }
 
-// impl Space for Escrow {
-//     const INIT_SPACE: usize = 8 + 8 + 32 + 32 + 8 + 1; 
+// impl Space for Escrow { //with derive Init Space we automate that part
+//     const INIT_SPACE: usize = 8 + 8 + 32 + 32 + 32 + 8 + 1;  // 
 // }
+
+// 8 => Program
+// 8 => Seed
+// 32 => Mint youre offering
+// 32 => MINT RECEIVER
+// 32 => receive
+// 8  => bump
+// 1 => anchor distributor

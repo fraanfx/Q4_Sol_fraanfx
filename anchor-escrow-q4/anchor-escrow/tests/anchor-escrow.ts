@@ -2,6 +2,7 @@ import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { AnchorEscrow } from "../target/types/anchor_escrow";
 import { use } from "chai";
+import { ASSOCIATED_PROGRAM_ID } from "@coral-xyz/anchor/dist/cjs/utils/token";
 
 describe("anchor-escrow", () => {
   // Configure the client to use the local cluster.

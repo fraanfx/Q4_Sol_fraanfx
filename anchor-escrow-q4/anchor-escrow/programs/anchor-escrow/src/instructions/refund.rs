@@ -11,7 +11,6 @@ use anchor_spl::token_interface::{
 
 #[derive(Accounts)] 
 pub struct Refund<'info> { 
-    maker:  Signer <'info>,
     #[account(mut)]
     maker: Signer<'info>,
     mint_a: InterfaceAccount<'info, Mint>,
@@ -24,9 +23,9 @@ pub struct Refund<'info> {
     #[account(
         mut,
         close =  maker,
-        has_one = mint_a,
+        has_one = mint_a, // we use has_one as a checker, to check the escrow accounts  are linked to the maker
         has_one = maker,
-        seeds = [b"escrow", maker.key().as_ref(), escrow.seed.to_le_bytes().as_ref()],
+        seeds = [b"escrow", maker.key().as_ref(), escrow.seed.to_le_bytes().as_ref()], // We declare seeds and bump ever for automated accounts
         bump = escrow.bump,
     )]
     pub escrow: Account<'info, Escrow>
@@ -34,7 +33,7 @@ pub struct Refund<'info> {
         mut,
         associated_token::mint = mint_a,
         associated_token::authority = escrow,
-        associated_token::token_program =  token_program,
+        associated_token::token_program = token_program,
     )]
     vault: InterfaceAccount<'info, TokenAccount>,
     token_program: Interface<'info, TokenInterface>,
@@ -54,8 +53,8 @@ impl <'info> Refund<'info> {
 
         let cpi_program =  self.token_program.to_account_info();
 
-        let cpi_accounts =  TransferChecked{
-            from: self.vault.to_account_info(),
+        let cpi_accounts =  TransferChecked{   // Refound
+            from: self.vault.to_account_info(),  // Token A --> (Vault --> First payer)
             to: self.maker_ata_a.to_account_info(),
             mint: self.mint_a.to_account_info(),
             authority: self.escrow.to_account_info(),
@@ -64,8 +63,10 @@ impl <'info> Refund<'info> {
         let cpi_context = CpiContext::new_with_signer(cpi_program, cpi_accounts, &signer_seeds);
         transfer_checked(cpi_context, self.vault.amount, self.mint_a_decimals)?;
 
+        let cpi_program =  self.token_program.to_account_info();
+
         let cpi_accounts = CloseAccount{
-            account: self.vault.to_account_info(),
+            account: self.vault.to_account_info(),  //Close account
             destination: self.maker.to_account_info(),
             authority: self.escrow.to_account_info(),
         };
