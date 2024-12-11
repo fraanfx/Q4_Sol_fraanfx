@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 
 //#[derive] dont forget 8 bytes for 
 pub struct Marketplace {
-    pub admin; Pubkey,
+    pub admin: Pubkey,
     pub fee: u16,
     pub treasury_bump: u8,
     pub rewards_bump: u8,
