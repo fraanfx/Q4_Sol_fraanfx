@@ -36,5 +36,3 @@ pub mod nft_staking {
 
 
 
-#[derive(Accounts)]
-pub struct Initialize {}
